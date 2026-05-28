@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: portfolio-lab-tls
+  namespace: flask-app-portfolio
+spec:
+  secretName: portfolio-lab-tls
+  issuerRef:
+    name: homelab-ca-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - portfolio.lab

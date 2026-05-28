@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flask-portfolio-ingress
+  namespace: flask-app-portfolio
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - portfolio.lab
+    secretName: portfolio-lab-tls
+  rules:
+  - host: portfolio.lab
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: flask-app-portfolio-service
+            port:
+              number: 5004
