@@ -1,0 +1,33 @@
+# Secrets
+*.key
+*.pem
+*.p12
+*.pfx
+*.kubeconfig
+kubeconfig
+.env
+.env.*
+*.tfvars
+*.ini
+# SSH
+.ssh/
+id_rsa
+id_ed25519
+
+# Terraform
+.terraform/
+terraform.tfstate*
+crash.log
+
+# Kubernetes secrets
+secrets.yaml
+secret.yaml
+*-secret.yaml
+
+# Cert manager
+ca.key
+tls.key
+
+# OS
+.DS_Store
+Thumbs.db
