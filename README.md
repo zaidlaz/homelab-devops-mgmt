@@ -262,6 +262,11 @@ This homelab provides practical experience in:
 * Monitoring & observability
 * Production-style platform engineering
 
+
+## 🎥 Homelab Video
+
+https://youtu.be/OKY7_zPGjRg
+
 ---
 
 # 👨‍💻 Author
