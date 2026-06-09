@@ -263,7 +263,7 @@ This homelab provides practical experience in:
 * Production-style platform engineering
 
 
-## 🎥 Homelab Video
+## 🎥 Homelab Walkthrough Video
 
 https://youtu.be/OKY7_zPGjRg
 
