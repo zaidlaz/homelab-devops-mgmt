@@ -1,92 +1,131 @@
-# 🚀 DevOps Homelab on Proxmox
+# 🚀 Enterprise DevOps Homelab Platform on Proxmox
 
-Enterprise-style DevOps / Platform Engineering homelab running on Proxmox VE with Kubernetes, GitOps, CI/CD, Monitoring, Ingress, and Secure Remote Access.
+A multi-node Platform Engineering and DevOps homelab built on Proxmox VE, Kubernetes, GitOps, Infrastructure-as-Code, Monitoring, and Cloud-Native application deployment.
+This environment simulates a production-style infrastructure platform with clustered virtualization, distributed Kubernetes workloads, automated deployments, service discovery, observability, and infrastructure management.
 
 ---
 
 # 📌 Overview
 
-This project simulates a modern cloud-native enterprise infrastructure environment using:
+The homelab is designed to provide hands-on experience with enterprise infrastructure operations, Kubernetes administration, GitOps workflows, CI/CD automation, monitoring, and platform engineering practices.
 
-* Proxmox VE
-* Terraform
-* Cloud-Init
-* Ansible
-* Kubernetes
-* ArgoCD GitOps
-* GitHub Actions CI/CD
-* Docker Hub
-* Flask Portfolio Application
-* Prometheus + Grafana Monitoring
-* MetalLB Load Balancing
-* Traefik Ingress Controller
-* cert-manager Internal PKI
-* Tailscale Secure Remote Access
+Core capabilities include:
 
-The goal of this homelab is to gain hands-on experience with real-world Platform Engineering and DevOps workflows.
+* Multi-node Proxmox Cluster
+* Kubernetes Cluster (kubeadm)
+* GitOps with ArgoCD
+* CI/CD with GitHub Actions
+* Infrastructure as Code with Terraform
+* Monitoring with Prometheus and Grafana
+* Load Balancing with MetalLB
+* Ingress Management with Traefik
+* Internal DNS with AdGuard Home
+* Secure Remote Access with Tailscale
+* CMDB with Kubernetes Discovery
+* Cloud-Native Application Hosting
+
+The environment hosts multiple production-style applications and supporting infrastructure services while demonstrating real-world DevOps and Platform Engineering workflows.
+
 
 ---
 
 # 🏗️ Current Architecture
 
+> **Security Note:** Internal IP addresses and management endpoints are intentionally anonymized for public sharing.
+
+
 ```text
-Developer Laptop
-       │
-       ▼
-GitHub Repository
-       │
-       ▼
-GitHub Actions CI/CD
-       │
-       ▼
-Docker Hub Registry
-       │
-       ▼
-ArgoCD GitOps
-       │
-       ▼
-Kubernetes Cluster
-       │
- ┌─────┼─────────────┐
- ▼     ▼             ▼
-Flask  Grafana     ArgoCD
-App
-       │
-       ▼
-Traefik Ingress
-       │
-       ▼
-MetalLB LoadBalancer
-       │
-       ▼
-Tailscale Secure Access
+                           GitHub
+                              │
+                              ▼
+                    GitHub Actions CI/CD
+                              │
+                              ▼
+                         Docker Hub
+                              │
+                              ▼
+                           ArgoCD
+                              │
+                              ▼
+                     Kubernetes Cluster
+                              │
+      ┌───────────────────────┼───────────────────────┐
+      ▼                       ▼                       ▼
+ Portfolio App          Zen Ecommerce           MyRecipe
+                              │
+                              ▼
+                            CMDB
+                              │
+                              ▼
+                    Traefik Ingress Controller
+                              │
+                              ▼
+                    MetalLB Load Balancer
+                              │
+                       <metallb-loadbalancer-ip>
+```
+
+## Virtualization Layer
+
+```text
+Proxmox Cluster (homelab)
+
+PVE01 (<pve01-management-ip>)
+├── mgmt01 (QDevice)
+├── adguard-home
+├── k8-master-homelab
+└── devops-tools
+
+PVE02 (<pve02-management-ip>)
+├── k8-wk1-homelab
+└── k8-wk2-homelab
+
+External Quorum Witness
+└── mgmt01 (Corosync QDevice)
 ```
 
 ---
 
 # 🖥️ Infrastructure
 
-| Component  | Details          |
-| ---------- | ---------------- |
-| Hypervisor | Proxmox VE 9.2.2 |
-| Hardware   | GMKTec Mini PC   |
-| CPU        | Intel i5-13500H  |
-| RAM        | 32GB             |
-| Storage    | 1TB SSD          |
-| OS         | Ubuntu 24.04     |
+| Component           | Details              |
+| ------------------- | -------------------- |
+| Hypervisor Platform | Proxmox VE Cluster   |
+| Cluster Name        | homelab              |
+| Node 1              | GMKTec Mini PC       |
+| CPU                 | Intel Core i5-13500H |
+| RAM                 | 32 GB                |
+| Storage             | 1 TB NVMe SSD        |
+| Node 2              | Beelink Mini PC      |
+| CPU                 | AMD Ryzen 7 (8C/16T) |
+| RAM                 | 24 GB                |
+| Storage             | 512 GB NVMe SSD      |
+| QDevice             | mgmt01               |
+| Total RAM           | 56 GB                |
+| Total Storage       | 1.5 TB SSD           |
+
+## Kubernetes Topology
+
+| Node              | Role          | Host  |
+| ----------------- | ------------- | ----- |
+| k8-master-homelab | Control Plane | PVE01 |
+| k8-wk1-homelab    | Worker        | PVE02 |
+| k8-wk2-homelab    | Worker        | PVE02 |
+
+This design distributes Kubernetes workloads across multiple physical Proxmox hosts, reducing single points of failure and providing a more realistic production-style architecture.
 
 ---
 
 # 🧩 VM Layout
 
-| VM Name           | IP Address     | Purpose                  |
+| VM Name           | Network Reference | Purpose                  |
 | ----------------- | -------------- | ------------------------ |
-| Proxmox Host      | 192.168.13.6   | Hypervisor               |
-| mgmt01            | 192.168.13.210 | kubectl / Ansible / Helm |
-| k8-master-homelab | 192.168.13.211 | Kubernetes Control Plane |
-| k8-wk1-homelab    | 192.168.13.212 | Kubernetes Worker        |
-| k8-wk2-homelab    | 192.168.13.213 | Kubernetes Worker        |
-| devops-tools      | 192.168.13.214 | Future tooling/services  |
+| Proxmox Host      | <pve01-management-ip> | Hypervisor               |
+| mgmt01            | <mgmt01-ip> | kubectl / Ansible / Helm |
+| k8-master-homelab | <k8-control-plane-ip> | Kubernetes Control Plane |
+| k8-wk1-homelab    | <k8-worker-01-ip> | Kubernetes Worker        |
+| k8-wk2-homelab    | <k8-worker-02-ip> | Kubernetes Worker        |
+| devops-tools      | <devops-tools-ip> | Future tooling/services  |
 
 ---
 
@@ -196,7 +235,7 @@ zaid/flask-app-portfolio
 | Flask Portfolio | https://portfolio.lab     |
 | ArgoCD          | https://argocd.lab        |
 | Grafana         | https://grafana.lab       |
-| Proxmox VE      | https://192.168.13.6:8006 |
+| Proxmox VE      | https://<proxmox-management-url>:8006 |
 
 ---
 
