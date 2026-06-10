@@ -1,0 +1,34 @@
+---
+- name: Patch Proxmox hosts safely
+  hosts: proxmox
+  become: true
+  serial: 1
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 1800
+
+    - name: Show available upgrades
+      command: apt list --upgradable
+      register: upgradable
+      changed_when: false
+
+    - name: Display available upgrades
+      debug:
+        var: upgradable.stdout_lines
+
+    - name: Apply safe package upgrades
+      apt:
+        upgrade: safe
+
+    - name: Check if reboot is required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required
+
+    - name: Show reboot requirement
+      debug:
+        msg: "Reboot required on {{ inventory_hostname }}"
+      when: reboot_required.stat.exists

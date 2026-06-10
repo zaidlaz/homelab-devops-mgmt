@@ -1,0 +1,9 @@
+---
+- import_playbook: baseline.yml
+- import_playbook: proxmox.yml
+- import_playbook: kubernetes.yml
+- import_playbook: management.yml
+- import_playbook: devops.yml
+- import_playbook: dns.yml
+- import_playbook: cve-patching.yml
+- import_playbook: proxmox-patching.yml

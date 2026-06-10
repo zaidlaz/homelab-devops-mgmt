@@ -1,5 +1,0 @@
----
-- import_playbook: 01-common.yml
-- import_playbook: 02-install-kubernetes.yml
-- import_playbook: 03-init-master.yml
-- import_playbook: 04-join-workers.yml

@@ -1,0 +1,22 @@
+---
+- name: Homelab baseline configuration
+  hosts: homelab
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install common tools
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - htop
+          - vim
+          - net-tools
+          - qemu-guest-agent
+        state: present

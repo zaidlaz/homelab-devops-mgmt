@@ -1,0 +1,20 @@
+---
+- name: Configure management VM
+  hosts: management
+  become: true
+
+  tasks:
+    - name: Install management tools
+      apt:
+        name:
+          - ansible
+          - git
+          - curl
+          - wget
+          - jq
+          - tree
+          - python3-pip
+          - net-tools
+          - dnsutils
+        state: present
+        update_cache: yes

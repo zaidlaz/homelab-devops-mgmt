@@ -1,0 +1,25 @@
+---
+- name: Configure DNS / AdGuard host baseline
+  hosts: dns
+  become: true
+
+  tasks:
+    - name: Install DNS troubleshooting tools
+      apt:
+        name:
+          - curl
+          - wget
+          - dnsutils
+          - net-tools
+          - htop
+        state: present
+        update_cache: yes
+
+    - name: Check listening DNS ports
+      shell: ss -tulpn | grep ':53' || true
+      register: dns_ports
+      changed_when: false
+
+    - name: Show DNS port status
+      debug:
+        var: dns_ports.stdout_lines

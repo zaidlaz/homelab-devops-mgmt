@@ -1,0 +1,41 @@
+---
+- name: Configure DevOps tools VM
+  hosts: devops
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install DevOps packages
+      apt:
+        name:
+          - git
+          - curl
+          - wget
+          - jq
+          - unzip
+          - python3-pip
+          - docker.io
+        state: present
+
+    - name: Check if Docker service exists
+      stat:
+        path: /lib/systemd/system/docker.service
+      register: docker_service
+
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        enabled: true
+        state: started
+      when: docker_service.stat.exists
+
+    - name: Add viduka user to docker group
+      user:
+        name: viduka
+        groups: docker
+        append: yes
+      when: docker_service.stat.exists

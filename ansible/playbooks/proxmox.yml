@@ -1,0 +1,30 @@
+---
+- name: Configure Proxmox hosts
+  hosts: proxmox
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Proxmox host tools
+      apt:
+        name:
+          - htop
+          - iftop
+          - iotop
+          - curl
+          - vim
+          - smartmontools
+        state: present
+
+    - name: Check Proxmox version
+      command: pveversion
+      register: pve_version
+      changed_when: false
+
+    - name: Show Proxmox version
+      debug:
+        var: pve_version.stdout
